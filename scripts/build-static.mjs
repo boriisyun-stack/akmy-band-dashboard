@@ -28,15 +28,17 @@ async function exportStatic() {
 
   let html = await res.text();
 
-  // Rewrite absolute root paths to relative paths for GitHub Pages subpath compatibility (/akmy-band-dashboard/)
+  // Rewrite all absolute asset paths (including import("/assets/...") script tags and RSC payload JSON strings)
   html = html
-    .replaceAll('href="/assets/', 'href="./assets/')
-    .replaceAll('data-rsc-css-href="/assets/', 'data-rsc-css-href="./assets/')
-    .replaceAll('src="/assets/', 'src="./assets/')
-    .replaceAll('href="/favicon.svg"', 'href="./favicon.svg"')
-    .replaceAll('href="/og.png"', 'href="./og.png"')
-    .replaceAll('content="/og.png"', 'content="./og.png"')
-    .replaceAll('url(/assets/', 'url(./assets/');
+    .replaceAll('"/assets/', '"./assets/')
+    .replaceAll("'/assets/", "'./assets/")
+    .replaceAll('url(/assets/', 'url(./assets/')
+    .replaceAll('"/favicon.svg"', '"./favicon.svg"')
+    .replaceAll("'/favicon.svg'", "'./favicon.svg'")
+    .replaceAll('"/og.png"', '"./og.png"')
+    .replaceAll("'/og.png'", "'./og.png'")
+    .replaceAll('"/cow-field-bg.png"', '"./cow-field-bg.png"')
+    .replaceAll("'/cow-field-bg.png'", "'./cow-field-bg.png'");
 
   const distClientDir = resolve(process.cwd(), "dist/client");
   const outDir = resolve(process.cwd(), "out");
